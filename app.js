@@ -1,13 +1,14 @@
 import { APIKEY } from './key.js'
 import http from 'http'
 import fs from 'fs'
-import HTMLparser from 'htmlparser2'
+import * as htmlparser2 from 'htmlparser2';
+
 
 
 let url = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=${APIKEY}&pageNo=1&numOfRows=1000&dataType=XML&base_date=20230416&base_time=0600&nx=55&ny=127`
 
 
-console.log("url", url);
+// console.log("url", url);
 
 
 const server = http.createServer(function (req, res) {
@@ -36,12 +37,15 @@ const server = http.createServer(function (req, res) {
     req.on('data', function (data) {
 
       body += data;
+      console.log(body);
+
+      const dom = htmlparser2.parseDocument(data);
+
 
     });
 
     req.on('end', function () {
 
-      console.log(body);
 
       req.writeHead(200);
       req.end()
@@ -55,13 +59,10 @@ const server = http.createServer(function (req, res) {
 server.listen(2080, function (error) {
 
   if (error) {
-    console.log("Server error");
+    console.log("Server Error");
   }
-
   else {
-
-    console.log("Server working");
-
+    console.log("Server Working");
   }
 
 })
